@@ -1,186 +1,43 @@
+// features/menu/menu.h
 #pragma once
-#include "../../hooks/hooks.h"
+#include <vector>
+#include <string>
+#include "external_include.h"
 
-namespace menu
-{
-	using namespace ImGui;
+// Forward declarations
+class c_window;
+class c_tab;
+class c_subtab;
 
-	const ImGuiColorEditFlags color_edit4_flags = ImGuiColorEditFlags_NoBorder | ImGuiColorEditFlags_NoTooltip | ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoLabel | ImGuiColorEditFlags_NoDragDrop | ImGuiColorEditFlags_AlphaPreview;
+class c_menu {
+public:
+    c_menu();
+    ~c_menu();
 
-	void render();
+    void init(); // Initialise le menu
+    void render(); // Dessine le menu
+    void update_input(); // Gère les entrées utilisateur
+    void draw_cursor(); // Dessine le curseur personnalisé
 
-	namespace custom
-	{
-        void hotkey(const char* label, hotkey_t* hotkey);
+    bool& get_opened(); // Retourne l'état du menu (ouvert/fermé)
+    void toggle(); // Bascule l'état du menu
 
-        const char* const key_names[] =
-        {
-            "UNK",
-            "MOUSE_L",
-            "MOUSE_R",
-            "CANCEL",
-            "MOUSE_3",
-            "MOUSE_4",
-            "MOUSE_5",
-            "UNK",
-            "BACK",
-            "TAB",
-            "UNK",
-            "UNK",
-            "CLEAR",
-            "RETURN",
-            "UNK",
-            "UNK",
-            "SHIFT",
-            "CONTROL",
-            "MENU",
-            "PAUSE",
-            "CAPITAL",
-            "KANA",
-            "UNK",
-            "JUNJA",
-            "FINAL",
-            "KANJI",
-            "UNK",
-            "ESCAPE",
-            "CONVERT",
-            "NONCONVERT",
-            "ACCEPT",
-            "MODECHANGE",
-            "SPACE",
-            "PRIOR",
-            "NEXT",
-            "END",
-            "HOME",
-            "LEFT",
-            "UP",
-            "RIGHT",
-            "DOWN",
-            "SELECT",
-            "PRINT",
-            "EXECUTE",
-            "SNAPSHOT",
-            "INSERT",
-            "DELETE",
-            "HELP",
-            "0",
-            "1",
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8",
-            "9",
-            "UNK",
-            "UNK",
-            "UNK",
-            "UNK",
-            "UNK",
-            "UNK",
-            "UNK",
-            "A",
-            "B",
-            "C",
-            "D",
-            "E",
-            "F",
-            "G",
-            "H",
-            "I",
-            "J",
-            "K",
-            "L",
-            "M",
-            "N",
-            "O",
-            "P",
-            "Q",
-            "R",
-            "S",
-            "T",
-            "U",
-            "V",
-            "W",
-            "X",
-            "Y",
-            "Z",
-            "LWIN",
-            "RWIN",
-            "APPS",
-            "UNK",
-            "SLEEP",
-            "0",
-            "1",
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8",
-            "9",
-            "MULTIPLY",
-            "ADD",
-            "SEPARATOR",
-            "SUBTRACT",
-            "DECIMAL",
-            "DIVIDE",
-            "F1",
-            "F2",
-            "F3",
-            "F4",
-            "F5",
-            "F6",
-            "F7",
-            "F8",
-            "F9",
-            "F10",
-            "F11",
-            "F12",
-            "F13",
-            "F14",
-            "F15",
-            "F16",
-            "F17",
-            "F18",
-            "F19",
-            "F20",
-            "F21",
-            "F22",
-            "F23",
-            "F24",
-            "UNK",
-            "UNK",
-            "UNK",
-            "UNK",
-            "UNK",
-            "UNK",
-            "UNK",
-            "UNK",
-            "NUMLOCK",
-            "SCROLL",
-            "OEM_NEC_EQUAL",
-            "OEM_FJ_MASSHOU",
-            "OEM_FJ_TOUROKU",
-            "OEM_FJ_LOYA",
-            "OEM_FJ_ROYA",
-            "UNK",
-            "UNK",
-            "UNK",
-            "UNK",
-            "UNK",
-            "UNK",
-            "UNK",
-            "UNK",
-            "UNK",
-            "LSHIFT",
-            "RSHIFT",
-            "LCONTROL",
-            "RCONTROL",
-            "LMENU",
-            "RMENU"
-        };
-	}
-}
+private:
+    std::vector<c_window*> m_windows; // Liste des fenêtres du menu
+    bool m_init = false; // Indicateur d'initialisation
+    bool m_opened = false; // État du menu (ouvert/fermé)
+
+    // Gestion des entrées
+    bool m_keystate[256] = { false };
+    bool m_oldstate[256] = { false };
+
+    // État de la souris
+    struct {
+        POINT pos;
+        POINT press_pos;
+        POINT hold_pos;
+        bool is_pressed = false;
+        bool is_holding = false;
+        bool needs_reset = false;
+    } g_mouse;
+};
